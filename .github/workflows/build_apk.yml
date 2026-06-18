@@ -39,14 +39,14 @@ jobs:
           export PATH="$HOME/flutter/bin:$PATH"
           flutter --version
 
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Ensure Android platform exists
-        run: flutter create --platforms=android .
-
-      - name: Build release APK
-        run: flutter build apk --release --target=lib/main.dart
+      - name: Build APK (install deps + create + build)
+        run: |
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          export PATH=$HOME/flutter/bin:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+          flutter --version
+          flutter pub get
+          flutter create --platforms=android . || true
+          flutter build apk --release --target=lib/main.dart
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
